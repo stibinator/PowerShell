@@ -3,5 +3,10 @@
 /Help
 /History
 /profiled.ps1.old
-Modules/MyTwitter/*
+Modules/MyTwitter*
 Modules/Az.*
+Modules/Pscx*
+Modules/Posh-git*
+Modules/PSReadLine*
+Modules/PSUrl
+Modules/MyTwitter/1.0.17
