@@ -13,3 +13,4 @@ Modules/MyTwitter
 Modules/GuiCompletion
 Modules/ShowUI
 Modules/csv2xls
+Modules/Get-FileMetaDataReturnObject
