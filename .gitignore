@@ -3,4 +3,5 @@
 /Help
 /History
 /profiled.ps1.old
-/MyTwitter/*/MyTwitter.json
+Modules/MyTwitter/*
+Modules/Az.*
