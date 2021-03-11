@@ -3,7 +3,7 @@
 /Help
 /History
 /profiled.ps1.old
-Modules/MyTwitter*
+Modules/MyTwitter
 Modules/Az.*
 Modules/Pscx
 Modules/Posh-git
