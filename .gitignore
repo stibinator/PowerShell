@@ -9,6 +9,6 @@ Modules/Pscx
 Modules/Posh-git
 Modules/PSReadLine
 Modules/PSUrl
-Modules/MyTwitter/1.0.17
-Modules/GuiCompletion*
+Modules/MyTwitter
+Modules/GuiCompletion
 Modules/ShowUI
