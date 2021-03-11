@@ -4,12 +4,11 @@
 /History
 /profiled.ps1.old
 Modules/MyTwitter
-Modules/Az.*
+Modules/Az.
 Modules/Pscx
 Modules/Posh-git
 Modules/PSReadLine
 Modules/PSUrl
 Modules/MyTwitter/1.0.17
 Modules/GuiCompletion*
-Modules/MySQLCmds
 Modules/ShowUI
