@@ -25,7 +25,7 @@ function DismountNetworkDrive {
 
 # commented out the next two lines because it's more reliable to use UNC
 #Import-Module "networkdrives" #easily mount/unmount mapped drives
-#MountNetworkDrive "\\mmfs1\users\sdixon" "\\mmfs1\users\sdixon"  #2>&1 > "c:\Users\sdixon\backuplog.txt"
+#MountNetworkDrive "\\mmfs1\users\stib" "\\mmfs1\users\stib"  #2>&1 > "c:\Users\stib\backuplog.txt"
 
 # robocopy options
 # /s  recurSe
@@ -39,9 +39,9 @@ $host.ui.RawUI.ForegroundColor = "cyan"
 $myDocs = [environment]::getfolderpath("MyDocuments");
 $projectsFolder =  join-path $myDocs "current work";
 write-host "backing up work projects folder: $projectsFolder"
-$projectsBUpFolder = "J:\backup" 	#'\\mmfs1\users\sdixon\My Documents\work'
-$pwshBUpFolder = "J:\pwshBUp" 		#"\\mmfs1\users\sdixon\My Documents\WindowsPowerShell"
-$DevBUp = "J:\DevBUp" 				#'\\mmfs1\users\sdixon\My Documents\development'
+$projectsBUpFolder = "J:\backup" 	#'\\mmfs1\users\stib\My Documents\work'
+$pwshBUpFolder = "J:\pwshBUp" 		#"\\mmfs1\users\stib\My Documents\WindowsPowerShell"
+$DevBUp = "J:\DevBUp" 				#'\\mmfs1\users\stib\My Documents\development'
 & robocopy.exe "$projectsFolder" "$projectsBUpFolder" /s /xo /xj /MT40 /nfl /ndl /njh 
 $host.ui.RawUI.ForegroundColor = "Magenta"
 
