@@ -1,0 +1,192 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>System.Collections.Hashtable</T>
+      <T>System.Object</T>
+    </TN>
+    <DCT>
+      <En>
+        <S N="Key">HugeText</S>
+        <Obj N="Value" RefId="1">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontSize</S>
+              <I32 N="Value">32</I32>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">MediumText</S>
+        <Obj N="Value" RefId="2">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontSize</S>
+              <I32 N="Value">14</I32>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">CueText</S>
+        <Obj N="Value" RefId="3">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontStyle</S>
+              <S N="Value">Italic</S>
+            </En>
+            <En>
+              <S N="Key">On_GotFocus</S>
+              <SBK N="Value">_x000D__x000A_            if ($this.Text -eq $OriginalText) {_x000D__x000A_                $this.Text = ""_x000D__x000A_                $this.ClearValue([Windows.Controls.Control]::FontStyleProperty)_x000D__x000A_            }_x000D__x000A_        </SBK>
+            </En>
+            <En>
+              <S N="Key">On_Loaded</S>
+              <SBK N="Value">_x000D__x000A_            $this.Resources.OriginalText =  $this.Text_x000D__x000A_        </SBK>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">ErrorStyle</S>
+        <Obj N="Value" RefId="4">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">Foreground</S>
+              <S N="Value">DarkRed</S>
+            </En>
+            <En>
+              <S N="Key">TextDecorations</S>
+              <SBK N="Value"> [Windows.TextDecorations]::Underline </SBK>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">SmallText</S>
+        <Obj N="Value" RefId="5">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontSize</S>
+              <I32 N="Value">9</I32>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">LargeText</S>
+        <Obj N="Value" RefId="6">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontSize</S>
+              <I32 N="Value">18</I32>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">Bold</S>
+        <Obj N="Value" RefId="7">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontWeight</S>
+              <S N="Value">Bold</S>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">Widget</S>
+        <Obj N="Value" RefId="8">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">ResizeMode</S>
+              <S N="Value">NoResize</S>
+            </En>
+            <En>
+              <S N="Key">Background</S>
+              <S N="Value">Transparent</S>
+            </En>
+            <En>
+              <S N="Key">WindowStyle</S>
+              <S N="Value">None</S>
+            </En>
+            <En>
+              <S N="Key">SizeToContent</S>
+              <S N="Value">WidthAndHeight</S>
+            </En>
+            <En>
+              <S N="Key">AllowsTransparency</S>
+              <B N="Value">true</B>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">Hyperlink</S>
+        <Obj N="Value" RefId="9">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">Foreground</S>
+              <S N="Value">DarkBlue</S>
+            </En>
+            <En>
+              <S N="Key">TextDecorations</S>
+              <SBK N="Value"> _x000D__x000A_                 [Windows.TextDecorations]::Underline_x000D__x000A_            </SBK>
+            </En>
+            <En>
+              <S N="Key">On_PreviewMouseDown</S>
+              <SBK N="Value">_x000D__x000A_                if ($this.Resources.Url) {_x000D__x000A_                    $realUrl = [Uri]$this.Resources.Url_x000D__x000A_                    $allowedSchemes = $this.Resources.AllowedSchemes_x000D__x000A_                    if (-not $allowedSchemes) { $allowedSchemes = 'http', 'https' }_x000D__x000A_                    if ($allowSchemes -contains $realUrl.Scheme) {_x000D__x000A_                        Start-Process -FilePath $realUrl _x000D__x000A_                    }_x000D__x000A_                }_x000D__x000A_            </SBK>
+            </En>
+            <En>
+              <S N="Key">Resource</S>
+              <Obj N="Value" RefId="10">
+                <TNRef RefId="0" />
+                <DCT>
+                  <En>
+                    <S N="Key">AllowedSchemes</S>
+                    <Obj N="Value" RefId="11">
+                      <TN RefId="1">
+                        <T>System.Object[]</T>
+                        <T>System.Array</T>
+                        <T>System.Object</T>
+                      </TN>
+                      <LST>
+                        <S>http</S>
+                        <S>https</S>
+                      </LST>
+                    </Obj>
+                  </En>
+                </DCT>
+              </Obj>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+      <En>
+        <S N="Key">BoldItalic</S>
+        <Obj N="Value" RefId="12">
+          <TNRef RefId="0" />
+          <DCT>
+            <En>
+              <S N="Key">FontWeight</S>
+              <S N="Value">Bold</S>
+            </En>
+            <En>
+              <S N="Key">FontStyle</S>
+              <S N="Value">Italic</S>
+            </En>
+          </DCT>
+        </Obj>
+      </En>
+    </DCT>
+  </Obj>
+</Objs>
