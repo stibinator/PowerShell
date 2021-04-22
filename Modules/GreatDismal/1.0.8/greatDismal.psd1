@@ -69,13 +69,13 @@ Description = 'Dreary images for your lockscreen'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'get-DismalLockscreen'
+FunctionsToExport = 'get-Despair'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = ''
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @()
@@ -95,19 +95,19 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @('personalisation', 'appearance', 'theme', 'lockscreen', 'dismal', 'dreary', 'theCrushingEmptinessOfQuotidianExistence'),
+        Tags = @('personalisation', 'appearance', 'theme', 'lockscreen', 'dismal', 'dreary', 'theCrushingEmptinessOfQuotidianExistence')
 
         # A URL to the license for this module.
-        # LicenseUri = 'https://www.gnu.org/licenses/gpl-3.0.en.html',
+        LicenseUri = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://blob.pureandapplied.com.au/greatdismal/'
 
         # A URL to an icon representing this module.
-        # IconUri = 'http://blob.pureandapplied.com.au/wp-content/uploads/2019/07/password-overlay.png',
+        IconUri = 'http://blob.pureandapplied.com.au/wp-content/uploads/2019/07/password-overlay.png'
 
         # ReleaseNotes of this module
-        # ReleaseNotes = 'fixed bug with install function'
+        ReleaseNotes = 'fixed bug with install function'
 
     } # End of PSData hashtable
 
