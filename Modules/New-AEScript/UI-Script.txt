@@ -1,5 +1,6 @@
 //@target aftereffects
 var thisScript = this;
+thisScript.name = "test";
 
 thisScript.buildGUI = function(thisObj) {
     // thisObj.theCopiedKeys = thisObj.prefs.readFromPrefs();
@@ -7,8 +8,11 @@ thisScript.buildGUI = function(thisObj) {
     thisObj: 
     new Window("palette", thisObj.scriptTitle, undefined, {resizeable: true});
     // ----------------------- UI Elements here ---------------------
-
-
+    var yesChkBx = thisObj.pal.add("checkbox", undefined, "yes");
+    var doTheThingsBtn = thisObj.pal.add("button", undefined, "Do the things");
+    doTheThingsBtn.onClick = function () {
+        thisScript.doTheThings(yesChkBx.value)
+    };
 
     //------------------------ build the GUI ------------------------
     if (thisObj.pal instanceof Window) {
@@ -20,9 +24,9 @@ thisScript.buildGUI = function(thisObj) {
 }
 
 //---------------------------- functions n shit ---------------------
-thisScript.doTheThings = function(){
-    thisScript.name = "test";
+thisScript.doTheThings = function(yesOrNo){
     app.beginUndoGroup(thisScript.name);
+    alert((yesOrNo)? "Yes!": "No!");
     var theComp = app.project.activeItem;
     if (theComp ){
         for(var i =0; i < theComp.selectedLayers.length; i++){

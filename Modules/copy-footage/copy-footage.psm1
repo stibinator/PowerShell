@@ -1,6 +1,6 @@
 ﻿  function Copy-Footage {
     param (
-    [string] $MVNumber = $(1+(Invoke-MySQLCommand -Query "SELECT MAX(tape_ID) FROM Tapedb").tables.table[0]),
+    [string] $MVNumber = -1,
     [datetime]$newerThan,
     [int]$DayAdjust,
     [int]$HourAdjust,
@@ -16,9 +16,20 @@
     [switch] $dontUpdateDB,
     [switch] $dontUpdateFolderList,
     [string] $folderName = "",
-    [string] $description = ""    
+    [string] $description = "",
+    [string] $footageDrive = "v:"
     )
-    
+    Write-Host "connecting to db"
+    $dbPW = Get-Content (join-path (Split-Path $script:MyInvocation.MyCommand.Path) "dbpw.bat" )| ConvertTo-SecureString
+    $Credentials = New-Object System.Management.Automation.PSCredential "webuser",$dbPW
+    $conn = Connect-MySqlServer -ComputerName "production.mv.vic.gov.au" -Credential $Credentials
+    Select-MySqlDatabase 'tapedb' -Connection $conn
+
+    if ($MVNumber -lt 0) { 
+      $MVNumber = $(1+(Invoke-MySQLQuery -Connection $conn -Query "SELECT MAX(tape_ID) FROM Tapedb").table.table[0])
+      write-host "Creating MV Number $MVNumber"
+    }
+
     $checkDate = ($null -ne $newerThan)
     $minuteAdjustment = $(if ($null -eq $DayAdjust){0} else {$DayAdjust * 24 * 60})
     $minuteAdjustment += $(if ($null -eq $HourAdjust){0} else {$HourAdjust * 60})
@@ -30,13 +41,13 @@
     $AudioExtensions = "\.(mp3)|(aac)|(ac3)|(wav)|(aif*)"
     if ($folderName -ne ""){$makeDestDir = $true}
     if ($MVNumber -match "MV([0-9]+)"){$MVNumber = $Matches[1]}
-    $outerFolder =  Get-ChildItem ("x:\MV{0:d5}*" -f $MVNumber)
+    $outerFolder =  Get-ChildItem ("$footageDrive\MV{0:d5}*" -f $MVNumber)
     if ((! ($outerFolder.Exists)) -or $null -eq $outerFolder){
       if ($makeDestDir){
         if ($folderName -eq ""){
           $foldername = Read-Host "Name for destination folder"
         }
-        $newFolder = "x:\MV{0:d5}{1}" -f $MVNumber, $(if($folderName -ne ""){"-"+$folderName})
+        $newFolder = "$footageDrive\MV{0:d5}{1}" -f $MVNumber, $(if($folderName -ne ""){"-"+$folderName})
         Write-Host ("destination folder will be created at`n{0}" -f $newFolder) -ForegroundColor DarkYellow
         $outerFolder = $newFolder
         $makeDestDir = $true
@@ -128,7 +139,7 @@
       write-host ("{0} out of {1} processed" -f $i, $FileList.length)
       
       if (! $dontUpdateDB){
-        import-module -Name invoke-mysqlCommand -ErrorAction SilentlyContinue
+        import-module -Name mysql -ErrorAction SilentlyContinue
         import-module -Name update-mvvdb -ErrorAction SilentlyContinue
         $shootDate = "{0}-{1}-{2}" -f $firstShootTime.Year, $firstShootTime.Month, $firstShootTime.Day
         if ($newEntry){
@@ -139,14 +150,14 @@
           Write-Host ("Inserting MV{0:d5}`nTitle = {1}`nDescription = {2}`nShoot date = {3}" -f $MVNumber, $folderName, $description, $shootDate)
           $goahead = ((Read-Host "Ok to Proceed? (Y/n)").ToLower() -eq "y")
           if ($goahead){ 
-            Invoke-MySQLCommand -Query $query
+            Invoke-MySQLQuery -Connection $conn -Query $query
           }
         } else {
           if ($folderName -eq ""){
-            $folderName = (Invoke-MySQLCommand -Query ("SELECT Title FROM tapedb WHERE tape_id = {0}" -f $MVNumber)).tables.table[0]
+            $folderName = (Invoke-MySQLQuery -Connection $conn -Query ("SELECT Title FROM tapedb WHERE tape_id = {0}" -f $MVNumber)).table.table[0]
           }
           if ($description -eq ""){
-            $description = (Invoke-MySQLCommand -Query ("SELECT description FROM tapedb WHERE tape_id = {0}" -f $MVNumber)).tables.table[0]
+            $description = (Invoke-MySQLQuery -Connection $conn -Query ("SELECT description FROM tapedb WHERE tape_id = {0}" -f $MVNumber)).table.table[0]
           }
           Write-Host -ForegroundColor Blue "Current database listing:"
           Write-Host -ForegroundColor Blue "Title:"
@@ -174,7 +185,7 @@
             write-host $description -ForegroundColor Cyan 
             $goahead = ((Read-Host "Ok to Proceed? (Y/n)").ToLower() -eq "y")
             if ($goahead){ 
-              Invoke-MySQLCommand -Query $query; 
+              Invoke-MySQLQuery -Connection $conn -Query $query; 
             }
           }
         }

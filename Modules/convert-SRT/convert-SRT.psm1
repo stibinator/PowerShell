@@ -139,22 +139,24 @@ function convert-SRTtoMVFormattedASS{
 
 function Convert-MovieToSubtitledVersion{
   param(
-  [Parameter(Mandatory=$True,ValueFromPipeLine=$True)]$inputfilePath,
+  [Parameter(Mandatory=$True,ValueFromPipeLine=$True)]
+  $inputfilePath,
   $subtitlesFilePath,
   $outputfile,
+  $outputFolder,
   [ValidateSet('Landscape','SocialsLandscape', 'Portrait-9x16', 'Portrait4x5', 'Landscape-TextBox','TitleSafeLandscape')]
   [string]$template = 'Landscape',
   [int]$pagebreakPos = 18,
   [int]$crf = 20,
   [ValidateSet('placebo', 'veryslow', 'slower', 'slow', 'medium', 'fast', 'veryfast', 'superfast', 'ultrafast')][string]$preset = "slow",
   [ValidateSet('film', 'animation', 'grain', 'stillimage', 'fastdecode', 'zerolatency')][string]$tune = $null,
-  [string]$pixFmt = 'yuv420p',
-  [ValidateSet('high', 'main', 'baseline')][string]$profileV = "main",
+  [ValidateSet('mp4','webm', 'prores', 'hap')][string]$format = 'mp4',
+  [ValidateSet('yuv420p', 'yuv422p', 'yuv422p10', 'yuv422p10le', 'yuva444p10le')][string]$pixFmt,
+  [ValidateSet('high', 'main', 'baseline', 'proxy', 'lt', 'hq', '4444', '4444xq', 'hap', 'hapq', 'hapalpha')][string]$profileV,
   [switch]$y,
   [switch]$n,
   [string]$defaultStyle = "Dialogue",
   [switch]$dontRemoveTemp,
-  [switch]$webm,
   [switch]$zapSquareBrackets
   )
   
@@ -167,54 +169,110 @@ function Convert-MovieToSubtitledVersion{
     Write-Host ("Can't find input file {0}" -f $inputfilePath) -ForegroundColor Red
   } else {
     if (! $outputfile){
-      if ($webm){$ext = ".webm"} else {$ext = ".mp4"}
-      $outputfile = $inputfile.fullname.replace($inputfile.Extension, "_subs$ext")
-    }
-    if (test-path $outputfile){
-      if ($y){
-        write-host "Overwriting current subtitled version" -BackgroundColor Yellow -ForegroundColor DarkRed
-      } else {
-        if ($n){
-          Write-Host "skipping currently existing file" -ForegroundColor Blue
-          $continue = $false
+      switch ($format) {
+        'webm' { 
+          $ext = '.webm' 
+          break 
+        }
+        'mp4' {
+          $ext = '.mp4'
+          break 
+        }
+        Default {
+          $ext = '.mov'
         }
       }
+    }
+    if ($outputFolder){
+      $outputfile = join-path $outputFolder ($inputfile.name.replace($inputfile.Extension, "_subs$ext"))
     } else {
-      # touch the file to avoid race conditions during multi-head renders
-      set-content $outputfile $null 
-      # $outputfile will always exist after this point. 
-      # Either it used to exist and we're overwriting or skipping, 
-      # or it now exists as empty file
-    }
-    # continue if overwriting, else skipping
-    if ($continue){
-      if ($subtitlesFilePath){
-        $subtitlesFile = get-item $subtitlesFilePath -ErrorAction SilentlyContinue
-      } else {
-        $subtitlesFile = get-item ($inputfile.fullname.replace($inputfile.Extension, ".srt")) -ErrorAction SilentlyContinue
-      }
-      if (! $?){
-        Write-Host ("Can't find subtitle file {0}" -f $subtitlesFilePath) -ForegroundColor Red
-      } else {
-        $tempSubFile = $inputfile.name.replace('"', '').replace("'", '').replace(",", "").replace(";", "").replace($inputfile.Extension, "_subsTemp.ass")
-        & convert-SRTtoMVFormattedASS $subtitlesFile -outputfile $tempSubFile -pagebreakPos $pagebreakPos -template $template -defaultStyle $defaultStyle -dontRemoveTemp $dontRemoveTemp -zapSquareBrackets $zapSquareBrackets
-        Write-Host "writing output: " -NoNewline -ForegroundColor Green;
-        Write-Host $outputfile -ForegroundColor Cyan;
-        if ($webm){
-          & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -crf $crf -b:v 0 -b:a 128k -vf ("ass='" + $tempSubFile + "'") $outputfile
-        } else {
-          if ( "" -eq $tune ){ 
-            Write-Host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset $tuneSetting -vf ass='$tempSubFile' '$outputfile'"
-            & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset -vf ass=$tempSubFile $outputfile
-          } else {
-            Write-Host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset $tuneSetting -vf ass='$tempSubFile' '$outputfile'"
-            & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset -tune $tune -vf ass=$tempSubFile $outputfile
-          } 
-        }
-        if (! ($dontRemoveTemp)) {
-          Remove-Item $tempSubFile
-        }
-      }
-    }    
+      $outputfile = $inputfile.fullname.replace($inputfile.Extension, "_subs$ext")
+          }
   }
-}
+  if (test-path $outputfile){
+    if ($y){
+      write-host "Overwriting current subtitled version" -BackgroundColor Yellow -ForegroundColor DarkRed
+    } else {
+      if ($n){
+        Write-Host "skipping currently existing file" -ForegroundColor Blue
+        $continue = $false
+      } else {
+        Write-Host "file exists at " -ForegroundColor Yellow -NoNewline
+        Write-Host $outputfile -ForegroundColor Cyan
+        $continue = $($yn = read-host "(y/N)?"; $yn.toLower() -eq "y")
+      }
+    }
+  } else {
+    # touch the file to avoid race conditions during multi-head renders
+    set-content "$outputfile" $null 
+    # $outputfile will always exist after this point. 
+    # Either it used to exist and we're overwriting or skipping, 
+    # or it now exists as empty file
+  }
+  # continue if overwriting, else skipping
+  if ($continue){
+    if ($subtitlesFilePath){
+      $subtitlesFile = get-item $subtitlesFilePath -ErrorAction SilentlyContinue
+    } else {
+      $subtitlesFile = get-item ($inputfile.fullname.replace($inputfile.Extension, ".srt")) -ErrorAction SilentlyContinue
+    }
+    if (! $?){
+      Write-Host ("Can't find subtitle file {0}" -f $subtitlesFilePath) -ForegroundColor Red
+    } else {
+      $tempSubFile = $inputfile.name.replace('"', '').replace("'", '').replace(",", "").replace(";", "").replace($inputfile.Extension, "_subsTemp.ass")
+      & convert-SRTtoMVFormattedASS $subtitlesFile -outputfile $tempSubFile -pagebreakPos $pagebreakPos -template $template -defaultStyle $defaultStyle -dontRemoveTemp $dontRemoveTemp -zapSquareBrackets $zapSquareBrackets
+      Write-Host "writing output: " -NoNewline -ForegroundColor Green;
+      Write-Host $outputfile -ForegroundColor Cyan;
+      if ($format -eq 'webm'){
+        # ---------------------------------------- Webm format ----------------------------------------
+        if ($null -eq $pixFmt){ $pixFmt = 'yuv420p' }
+        write-host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -pix_fmt $pixFmt -crf $crf -b:v 0 -b:a 128k -vf (ass='$tempSubFile') '$outputfile'"
+        & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -crf $crf -b:v 0 -b:a 128k -vf ("ass='" + $tempSubFile + "'") $outputfile
+      } elseif ($format -eq 'prores'){
+        # ----------------------------------------prores / mov format ----------------------------------------
+        # check pix_fmt is ok
+        if (($null -eq $pixFmt) -or (@('yuv422p10le', 'yuva444p10le').IndexOf($pixFmt) -lt 0 )){ $pixFmt = 'yuv422p10le' }
+        # check profile
+        $profileV = @('proxy', 'lt', 'hq', '4444', '4444xq').IndexOf($profileV);
+        if ($profileV -lt 0){ $profileV  = 3 } #no $profileV or an incorrect one will return -1 in the line above
+        write-host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -pix_fmt $pixFmt -profile:v $profileV  -vf (ass='$tempSubFile') '$outputfile'"
+        & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -profile:v $profileV -vf ("ass='" + $tempSubFile + "'") $outputfile
+      } elseif ($format -eq 'hap'){
+        # ---------------------------------------- hap / mov format ----------------------------------------
+        # check pix_fmt is ok
+        if ($null -ne $pixFmt) {Write-Host "discarding pix_fmt for hap"}
+        # check profile
+        if ($profileV -eq 'hap'){
+          write-host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -c:v hap  -vf ass='$tempSubFile' '$outputfile'"
+          & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -c:v hap -vf "ass='$tempSubFile'" $outputfile
+        } elseif ($profileV -eq 'hap_alpha') {
+          write-host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -c:v hap -format hap_alpha  -vf ass='$tempSubFile' '$outputfile'"
+          & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -c:v hap -format hap_alpha -vf "ass='$tempSubFile'" $outputfile
+        } else {
+          write-host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -c:v hap -format hap_q  -vf ass='$tempSubFile' '$outputfile'"
+          & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -c:v hap -format hap_q -vf "ass='$tempSubFile'" $outputfile
+        }
+        if ($profileV -lt 0){ $profileV  = 3 } #no $profileV or an incorrect one will return -1 in the line above
+      } else {
+        # ---------------------------------------- h264/mp4 format ----------------------------------------
+        # check pix_fmt
+        $fmtIndex = @('yuv420p', 'yuv422p', 'yuv422p10').IndexOf($pixFmt)
+        if ($fmtIndex -lt 0 -or $fmtIndex -gt 2){ $pixFmt = 'yuv420p' }
+        # check profile
+        $profileIndex = @('high', 'main', 'baseline').IndexOf($profileV)
+        if ($profileIndex -lt 0 -or $profileIndex -gt 2){ $profileV  = "main" }
+        if ( "" -eq $tune ){ 
+          Write-Host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset $tuneSetting -vf ass='$tempSubFile' '$outputfile'"
+          & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset -vf "ass='$tempSubFile'" $outputfile
+        } else {
+          Write-Host "ffmpeg.exe -hide_banner -loglevel warning -stats -y -i '$inputfile' -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset $tuneSetting -vf ass='$tempSubFile' '$outputfile'"
+          & ffmpeg.exe -hide_banner -loglevel warning -stats -y -i $inputfile -pix_fmt $pixFmt -profile:v $profileV -crf $crf -preset $preset -tune $tune -vf "ass='$tempSubFile'" $outputfile
+        } 
+      }
+    }
+    if (! ($dontRemoveTemp)) {
+      Remove-Item $tempSubFile
+    }
+  }
+}    
+

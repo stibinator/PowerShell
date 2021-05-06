@@ -10,8 +10,9 @@ function New-AEScript {
     [switch]$overWriteOK
     )
     
+    
     $hardLinkTargetFolder = Join-Path $env:APPDATA "Adobe" "After Effects"
-    $aeversions = Get-ChildItem $hardLinkTargetFolder -dir
+    $aeversions = Get-ChildItem $hardLinkTargetFolder -dir|Where-Object{$_.name -match (".*[0-9]+")}
     Write-Host $aeversions
     $latestVersion = 0;
     foreach($n in $aeversions){
@@ -56,7 +57,8 @@ function New-AEScript {
         try {
             Set-Content -Path $newScriptPath -Value $scriptText
             Write-Host "Created $scriptName in $hardLinkTargetFolder" -ForegroundColor Green
-            New-Hardlink $hardLinkPath $newScriptPath
+            cmd /c "mklink /h  $hardLinkPath $newScriptPath"
+            # New-Hardlink $hardLinkPath $newScriptPath
             Write-host "Hardlinked script to AE Scripts folder $hardLinkTargetFolder" -ForegroundColor Green
         }
         catch {

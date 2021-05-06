@@ -1,0 +1,133 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>Microsoft.PowerShell.Commands.PSRepositoryItemInfo</T>
+      <T>System.Management.Automation.PSCustomObject</T>
+      <T>System.Object</T>
+    </TN>
+    <MS>
+      <S N="Name">Invoke-MySqlQuery</S>
+      <S N="Version">1.0.0</S>
+      <S N="Type">Script</S>
+      <S N="Description">Runs a SQL script against a MySQL instance. Requires the ADO.NET driver for MySQL - http://dev.mysql.com/downloads/connector/net/</S>
+      <S N="Author">Warren F.</S>
+      <S N="CompanyName">ramblingcookiemonster</S>
+      <Nil N="Copyright" />
+      <DT N="PublishedDate">2016-07-20T15:16:57+10:00</DT>
+      <Obj N="InstalledDate" RefId="1">
+        <DT>2021-04-30T14:08:47.4200465+10:00</DT>
+        <MS>
+          <Obj N="DisplayHint" RefId="2">
+            <TN RefId="1">
+              <T>Microsoft.PowerShell.Commands.DisplayHintType</T>
+              <T>System.Enum</T>
+              <T>System.ValueType</T>
+              <T>System.Object</T>
+            </TN>
+            <ToString>DateTime</ToString>
+            <I32>2</I32>
+          </Obj>
+        </MS>
+      </Obj>
+      <Nil N="UpdatedDate" />
+      <URI N="LicenseUri">https://github.com/RamblingCookieMonster/PowerShell/blob/master/LICENSE</URI>
+      <URI N="ProjectUri">https://github.com/RamblingCookieMonster/PowerShell</URI>
+      <Nil N="IconUri" />
+      <Obj N="Tags" RefId="3">
+        <TN RefId="2">
+          <T>System.Object[]</T>
+          <T>System.Array</T>
+          <T>System.Object</T>
+        </TN>
+        <LST>
+          <S>MySql</S>
+          <S>Query</S>
+          <S>Sql</S>
+          <S>PSScript</S>
+        </LST>
+      </Obj>
+      <Obj N="Includes" RefId="4">
+        <TN RefId="3">
+          <T>System.Collections.Hashtable</T>
+          <T>System.Object</T>
+        </TN>
+        <DCT>
+          <En>
+            <S N="Key">RoleCapability</S>
+            <Obj N="Value" RefId="5">
+              <TNRef RefId="2" />
+              <LST />
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">DscResource</S>
+            <Ref N="Value" RefId="5" />
+          </En>
+          <En>
+            <S N="Key">Command</S>
+            <Obj N="Value" RefId="6">
+              <TNRef RefId="2" />
+              <LST>
+                <S>Invoke-MySQLQuery</S>
+              </LST>
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">Workflow</S>
+            <Ref N="Value" RefId="5" />
+          </En>
+          <En>
+            <S N="Key">Function</S>
+            <Obj N="Value" RefId="7">
+              <TNRef RefId="2" />
+              <LST>
+                <S>Invoke-MySQLQuery</S>
+              </LST>
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">Cmdlet</S>
+            <Ref N="Value" RefId="5" />
+          </En>
+        </DCT>
+      </Obj>
+      <Nil N="PowerShellGetFormatVersion" />
+      <Nil N="ReleaseNotes" />
+      <Obj N="Dependencies" RefId="8">
+        <TNRef RefId="2" />
+        <LST />
+      </Obj>
+      <S N="RepositorySourceLocation">https://www.powershellgallery.com/api/v2/items/psscript</S>
+      <S N="Repository">PSGallery</S>
+      <S N="PackageManagementProvider">NuGet</S>
+      <Obj N="AdditionalMetadata" RefId="9">
+        <TN RefId="4">
+          <T>System.Management.Automation.PSCustomObject</T>
+          <T>System.Object</T>
+        </TN>
+        <MS>
+          <S N="description">Runs a SQL script against a MySQL instance. Requires the ADO.NET driver for MySQL - http://dev.mysql.com/downloads/connector/net/</S>
+          <S N="requireLicenseAcceptance">True</S>
+          <S N="isLatestVersion">True</S>
+          <S N="isAbsoluteLatestVersion">True</S>
+          <S N="versionDownloadCount">590</S>
+          <S N="downloadCount">590</S>
+          <S N="packageSize">7490</S>
+          <S N="published">20/07/2016 3:16:57 PM +10:00</S>
+          <S N="created">20/07/2016 3:16:57 PM +10:00</S>
+          <S N="lastUpdated">29/04/2021 8:00:21 PM +10:00</S>
+          <S N="tags">MySql  Query Sql PSScript PSFunction_Invoke-MySQLQuery PSCommand_Invoke-MySQLQuery PSIncludes_Function</S>
+          <S N="developmentDependency">False</S>
+          <S N="updated">2021-04-29T20:00:21Z</S>
+          <S N="NormalizedVersion">1.0.0</S>
+          <S N="Authors">Warren F.</S>
+          <S N="IsPrerelease">false</S>
+          <S N="ItemType">Script</S>
+          <S N="FileList">Invoke-MySqlQuery.nuspec|Invoke-MySqlQuery.ps1</S>
+          <S N="GUID">0a3629db-9d0f-4b9c-a75f-d708778ee444</S>
+        </MS>
+      </Obj>
+      <S N="InstalledLocation">C:\Users\sdixon\OneDrive - Museums Victoria\Documents\PowerShell\Scripts</S>
+    </MS>
+  </Obj>
+</Objs>

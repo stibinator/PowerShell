@@ -40,7 +40,7 @@ function update-mvvdb{
     $folders = @()
     $result =$false
     if ($MVVDBNumbers.length ){
-        for ($i =0; $i -lt $MVVDBNumbers; $i++){
+        for ($i =0; $i -lt $MVVDBNumbers.length; $i++){
             if (test-path $MVVDBNumbers[$i]){
                 $folders += get-item $MVVDBNumbers[$i]
             } else {update-mvvdb

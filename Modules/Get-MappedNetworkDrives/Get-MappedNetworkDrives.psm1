@@ -1,9 +1,7 @@
 function get-mappedNetworkDrives{
     param (# write to console   
-    [string]
-    $listFile = "~\appdata\local\mappedDrives.xml",
-    [switch]
-    $writeToConsole
+    [string]$listFile = "~\appdata\local\mappedDrives.xml",
+    [switch]$writeToConsole
     )
     $drives = Get-PSDrive -PSProvider FileSystem |
     Select-Object Name, DisplayRoot |
@@ -16,8 +14,7 @@ function get-mappedNetworkDrives{
 
 function set-mappedDrivesFromList{
     param (
-        [string]
-        $listFile = "~\appdata\local\mappedDrives.xml"
+        [string]$listFile = "~\appdata\local\mappedDrives.xml"
     )
     $mappedDrives = Import-Clixml $listFile
     $mountedDrives = "";

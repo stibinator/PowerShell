@@ -23,52 +23,6 @@ function Invoke-SelectFileDialog
 	}
 }
 
-function get-prefs
-{
-	$prefs = join-path ([System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::ApplicationData)) "aerenderMultiPrefs.json";
-	$needToUpdatePrefs = $false
-	if (Test-Path $prefs -ErrorAction SilentlyContinue){
-		$prefsData = ConvertFrom-Json ((Get-Content $prefs -ErrorAction silentlycontinue) -join("`n"))
-	}
-	if ($prefsData.AERenderExecutable){
-		$AERenderExecutable = $prefsData.AERenderExecutable
-	} 
-	if ($prefsData.AEExecutable){
-		$AEExecutable = $prefsData.AERenderExecutable
-	} 
-	if (! ($AERenderExecutable -and (Test-path $AERenderExecutable))){
-		write-host ("No aerender.exe found") -foregroundcolor Red
-		$AERenderExecutable = Invoke-SelectFileDialog -Filter "Executables Aerender.exe|Aerender.exe" -Title "Please locate the AERender executable" -Directory 'C:\Program files\Adobe\';
-		$needToUpdatePrefs = $true
-	}
-	if (! ($AEExecutable -and (Test-path $AEExecutable))){
-		write-host ("No AfterFX.exe found") -foregroundcolor Red
-		$AEExecutable = Invoke-SelectFileDialog -Filter "Executables AfterFX.exe|AfterFX.exe" -Title "Please locate the AFter Effects executable" -Directory 'C:\Program files\Adobe\';
-		$needToUpdatePrefs = $true
-	}
-	$executables = @{
-		"AERenderExecutable"= $AERenderExecutable;
-		"AEExecutable"= $AEExecutable
-	}
-
-	if ($needToUpdatePrefs){
-		Set-Content $prefs (ConvertTo-Json $executables
-			)
-	}
-	return $executables
-}
-
-function set-AERenderExecutable
-{
-	$executables = get-prefs
-	return $executables.AERenderExecutable
-}
-
-function set-AEExecutable
-{
-	$executables = get-prefs
-	return $executables.AEExecutable
-}
 
 # returns human readable saved date for the project
 function get-SaveDate
@@ -115,9 +69,22 @@ function test-isThereANewerVersion
 	}
 }
 
+function  get-AERenderExecutable {
+	$adobeFolder = Join-Path $Env:Programfiles "Adobe" 
+	$versions = Get-ChildItem $adobeFolder|Where-Object {$_.name -match "Adobe After Effects"}
+	$latestVersion = ($versions |Sort-Object)[-1]
+	return (get-item (join-path $latestVersion 'support files' 'aerender.exe')).fullname
+}
+function  get-AEExecutable {
+	$adobeFolder = Join-Path $Env:Programfiles "Adobe" 
+	$versions = Get-ChildItem $adobeFolder|Where-Object {$_.name -match "Adobe After Effects"}
+	$latestVersion = ($versions |Sort-Object)[-1]
+	return (get-item (join-path $latestVersion 'support files' 'AfterFX.exe')).fullname
+}
+
 function Get-RQCount($projFile){
 	$w = get-foreGroundWindow
-	$AfterFX =  set-AEExecutable
+	$AfterFX =  get-AEExecutable
 	Remove-Item $tempFileWinPath -ErrorAction silentlycontinue
 	# can't script AE when aerender is running
 	if (! (get-process "aerender" -ErrorAction SilentlyContinue)){
@@ -165,11 +132,14 @@ function Invoke-AerenderMulti
 	[switch]$noNewWindow,
 	[switch]$waitUntilAllRendersAreDoneBeforeQuitting,
 	[switch]$runAERenderAtNormalPriority,
-	[switch]$useLastProjectFile
+	[switch]$useLastProjectFile,
+	[string]$AERenderExecutable
 	)
 	$settingsFile = join-path $env:APPDATA "pureandapplied" "invoke-aerender-lastproj.txt"
-	write-host ("Invoke-AerenderMulti runs several multi-machine renderers in parallel. Instances can be started and stopped while rendering.`nQueued comps must be saved as multi-machine renders for it to work`nuse Invoke-aerendersingle for single machine comps") -foregroundColor "yellow"
-	$AERenderExecutable = set-AERenderExecutable
+	write-host ("Invoke-AerenderMulti runs several multi-machine renderers in parallel`nInstances can be started and stopped while rendering.`nQueued comps must be saved as multi-machine renders for it to work`nUse Invoke-aerendersingle for single machine comps") -foregroundColor Yellow
+	if ((! $AERenderExecutable) -or (! (test-path $AERenderExecutable))){
+		$AERenderExecutable = get-AERenderExecutable
+	}
 	if ($AERenderExecutable)
 	{
 		$okToGo = "y";
@@ -212,38 +182,46 @@ function Invoke-AerenderMulti
 				$saved = get-SaveDate($projFile);
 				#report to thew user what's going on
 				$divider = "`n" + ("-" * (Get-Host).ui.rawui.windowsize.width) + "`n"; # trick to make a row of dashes the width of the window
-				write-host ($divider) -foregroundColor "yellow"
-				write-host ((Get-Date)) -foregroundColor "yellow"
-				write-host ("`n{0,-24}" -f "Rendering project: ") -foregroundColor "yellow" -nonewline
-				write-host $projFile.name -foregroundColor "white"
-				write-host ("`n{0,-24}" -f "from folder:") -foregroundColor "yellow" -nonewline
-				write-host $projFile.directory.fullname -foregroundColor "white"
-				write-host ($divider) -foregroundColor "yellow"
+				write-host ($divider) -foregroundColor Yellow
+				write-host ((Get-Date)) -foregroundColor Yellow
+				write-host ("`n{0,-24}" -f "Rendering project: ") -foregroundColor Cyan -nonewline
+				write-host $projFile.name -foregroundColor White
+				write-host ("`{0,-24}" -f "from folder:") -foregroundColor Cyan -nonewline
+				write-host $projFile.directory.fullname -foregroundColor White
+				# write-host ($divider) -foregroundColor Yellow
 				if ($saved -eq "just now"){
-					write-host ("{0,-24}" -f "last saved:") -foregroundColor "yellow" -nonewline
-					write-host $saved -foregroundColor "green"
+					write-host ("{0,-24}" -f "last saved:") -foregroundColor Cyan -nonewline
+					write-host $saved -foregroundColor Green
+				} elseif ($saved -match "minutes ago"){
+					write-host ("{0,-24}" -f "last saved:") -foregroundColor Cyan -nonewline
+					write-host $saved -foregroundColor DarkGreen
+				} elseif ($saved -match "WTF"){
+					write-host ("{0,-24}" -f "last saved:") -foregroundColor Cyan -nonewline
+					write-host $saved -foregroundColor Red 
 				} else {
-					write-host ("{0,-24}" -f "last saved:") -foregroundColor "yellow" -nonewline
-					write-host $saved -foregroundColor "white"
-				}
-				write-host ($divider + "`n") -foregroundColor "yellow"
-				write-host ("Using [ {0} ] instances of AERender" -f $instances ) -foregroundColor "yellow"
-				write-host ("`nAerender executable is {0}" -f $AERenderExecutable) -foregroundColor "yellow"
+					write-host ("{0,-24}" -f "last saved:") -foregroundColor Cyan -nonewline
+					write-host $saved -foregroundColor white
+				} 
+				write-host $divider -foregroundColor Yellow
+				write-host ("Using [ {0} ] instances of AERender" -f $instances ) -foregroundColor Cyan
+				write-host "`nAerender executable is " -foregroundColor Cyan -NoNewline
+				Write-Host $AERenderExecutable
 				if ($waitUntilAllRendersAreDoneBeforeQuitting){
-					write-host ("`nWaiting for the render to finish") -foregroundColor "yellow"
+					write-host ("`nWaiting for the render to finish") -foregroundColor DarkYellow
 				};
 				if ($shutDownAfterwards -match "sl"){
-					write-host ("`nthen sleeping") -foregroundColor "DarkYellow"
+					write-host ("`nthen sleeping") -foregroundColor DarkYellow
 				}
 				if ($shutDownAfterwards -match "sh"){
-					write-host ("`nthen shutting down") -foregroundColor "DarkYellow"
+					write-host ("`nthen shutting down") -foregroundColor DarkYellow
 				}
-				write-host ("`n" + $divider) -foregroundColor "white"
+				write-host ("`n" + $divider) -foregroundColor Yellow
 				
 				
 				if ($StatusFile){add-content $statusfile  (Get-Date) }
 				if (! ($noConfirm) ){
-					$goAhead = (Read-Host ("Type the number of instances, 'n' to cancel, `nor [return] to use default: [ {0} ]" -F $instances)).toLower()
+					Write-Host ("Type the number of instances, 'n' to cancel, `nor [return] to use default: [ {0} ]" -F $instances) -ForegroundColor DarkYellow
+					$goAhead = (Read-Host).toLower()
 				}	else {
 					$goAhead = $instances
 				}
@@ -263,7 +241,7 @@ function Invoke-AerenderMulti
 					Set-Content $ROTempFile ""  -ErrorAction SilentlyContinue
 					for ($i = 0 ; $i -lt $instances; $i++ ){
 						if ($noNewWindow){
-
+							
 							Start-Process $AERenderExecutable -ArgumentList '-project', ('"{0}"' -f $projFile.fullname) -noNewWindow
 						} else {
 							Start-Process $AERenderExecutable -ArgumentList '-project', ('"{0}"' -f $projFile.fullName)
@@ -320,8 +298,8 @@ function Invoke-AerenderSingle
 	[switch]$runAERenderAtNormalPriority,
 	[switch]$countRenderQueue
 	)
-	write-host ("Invoke-AerenderSingle runs several single-machine renders in parallel, for multiple comps in the render queue`n") -foregroundColor "yellow"
-	$AERenderExecutable = set-AERenderExecutable
+	write-host ("Invoke-AerenderSingle runs several single-machine renders in parallel, for multiple comps in the render queue`n") -foregroundColor Yellow
+	$AERenderExecutable = get-AERenderExecutable
 	if ($AERenderExecutable)
 	{
 		$okToGo = "y"
@@ -390,29 +368,29 @@ function Invoke-AerenderSingle
 				if ($rq.length -lt $maxInstances){$maxInstances = $rq.length};
 				#------------------report to the user what's going to happen------------------
 				$f = $host.ui.RawUI.ForegroundColor
-				$host.ui.RawUI.ForegroundColor = "yellow"
+				$host.ui.RawUI.ForegroundColor = Yellow
 				$divider = ("`n" + ("-" * (Get-Host).ui.rawui.windowsize.width) + "`n"); # trick to make a row of dashes the width of the window
 				write-host ($divider);
 				write-host (" " + (Get-Date));
 				write-host ("`n Aerender executable is {0}" -f $AERenderExecutable );
 				write-host ($divider);
 				write-host (" {0,-24}" -f "Rendering project:") -nonewline;
-				write-host ($projFile.name) -foregroundColor "white";
+				write-host ($projFile.name) -foregroundColor White;
 				write-host ("`n {0,-24}{1}" -f "from folder:", $projFile.directory.fullname);
 				if ($saved -eq "just now"){
 					write-host (" {0,-24}" -f "last saved:") -nonewline;
-					write-host $saved -foregroundColor "green";
+					write-host $saved -foregroundColor Green;
 				} else {
 					write-host (" {0,-24}" -f "last saved:") -nonewline;
-					write-host $saved -foregroundColor "white";
+					write-host $saved -foregroundColor White;
 				}
 				write-host ($divider)
 				write-host (" Starting at queue item ") -nonewline;
-				write-host ("#" + $firstQIndex) -foregroundColor "white"
+				write-host ("#" + $firstQIndex) -foregroundColor White
 				write-host (" Finishing at queue item ") -nonewline;
-				write-host ("#" + $lastQIndex) -foregroundColor "white"
+				write-host ("#" + $lastQIndex) -foregroundColor White
 				write-host ("`n Running at most [ ") -nonewline;
-				write-host ($maxInstances ) -foregroundColor "white" -nonewline;
+				write-host ($maxInstances ) -foregroundColor White -nonewline;
 				write-host (" ] instances of AERender.exe at any time.");
 				if ($waitUntilAllRendersAreDoneBeforeQuitting){
 					write-host ("`n Waiting for the render to finish.");
@@ -431,7 +409,7 @@ function Invoke-AerenderSingle
 				#confirm if necessary
 				if (! ($noConfirm) ){
 					write-host ("Ready to go. To start type in either:`n - the maximum number of instances,`n - 'n' to cancel, `n - or [return] to use: [ ") -nonewline;
-					write-host ($maxInstances) -foregroundColor "yellow" -nonewline;
+					write-host ($maxInstances) -foregroundColor Yellow -nonewline;
 					write-host (" ] instances at a time.");
 					$goAhead = (Read-Host "max instances").toLower();
 				}	else {
