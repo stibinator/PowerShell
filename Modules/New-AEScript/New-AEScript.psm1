@@ -30,7 +30,7 @@ function New-AEScript {
     }
     # compile the file and hardlink names
     $newScriptPath = Join-Path $developmentDir $scriptName
-    $hardLinkPath = (Join-Path $hardLinkTargetFolder $scriptName)
+    # $hardLinkPath = (Join-Path $hardLinkTargetFolder $scriptName)
     
     #get the template
     $templatePath = Join-Path $PSScriptRoot  "$template.txt"; #templates are in the same dir as the PS script
@@ -56,10 +56,11 @@ function New-AEScript {
     if ($okToGo){
         try {
             Set-Content -Path $newScriptPath -Value $scriptText
-            Write-Host "Created $scriptName in $hardLinkTargetFolder" -ForegroundColor Green
-            cmd /c "mklink /h  $hardLinkPath $newScriptPath"
+            Write-Host "Created $scriptName in $developmentDir" -ForegroundColor Green
+            # write-host "'$hardLinkPath' '$newScriptPath'"
+            # cmd /c mklink /h "$newScriptPath"  "$hardLinkPath" 
             # New-Hardlink $hardLinkPath $newScriptPath
-            Write-host "Hardlinked script to AE Scripts folder $hardLinkTargetFolder" -ForegroundColor Green
+            # Write-host "Hardlinked script to AE Scripts folder $hardLinkTargetFolder" -ForegroundColor Green
         }
         catch {
             Write-Host "An error occured" -ForegroundColor Red

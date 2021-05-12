@@ -33,18 +33,18 @@ if ($host.Name -eq 'ConsoleHost')
     $d8t = (Get-Date)
     $d8tLngth = ($d8t -as [string]).length
     $pathFG = "Gray"
-    $pathBG = "DarkGray"
+    $pathBG = "DarkCyan"
     $promptFG = "White"
-    $timeBG = "DarkGray"
+    $timeBG = "DarkCyan"
+    $bgc = "Blue"
+    $timeFG = "Cyan"
+    $curs = ">"
     if ($isElevated){
       $bgc = "DarkRed"
-      $curs = ">"
+      $pathBG = "DarkRed"
+      $timeBG = "DarkRed"
       $timeFG = "Yellow"
-    } else {
-      $bgc = "Blue"
-      $timeFG = "Cyan"
-      $curs = ">"
-    }
+    } 
     Write-Host ("{0,$(0 - $($host.UI.rawui.windowSize.width) + $d8tLngth + 1)}" -f $(get-location)) -nonewline -ForegroundColor $pathFG -BackgroundColor $pathBG
     Write-Host ("{0} " -f $(Get-Date)) -foregroundcolor $timeFG -BackgroundColor $timeBG
     Write-Host $curs -BackgroundColor $bgc -ForegroundColor $promptFG -nonewline
@@ -62,8 +62,8 @@ if ($host.Name -eq 'ConsoleHost')
   # trying this out
   Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
   Set-PSReadlineOption -ShowToolTips
+  if (! $isElevated){
   Install-GuiCompletion # better completion with ^space
-  
   # colours for guicompletion
   $GuiCompletionConfig.Colors = @{
     "BorderTextColor" = "Yellow"
@@ -75,6 +75,7 @@ if ($host.Name -eq 'ConsoleHost')
     "BorderBackColor" = "DarkGray"
     "BorderColor" = "DarkGray"
   }
+}
   
   # ----------------------------------CLI weather------------------------------------------- 
   
