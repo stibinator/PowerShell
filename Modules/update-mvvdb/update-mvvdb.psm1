@@ -8,6 +8,20 @@ function ParseDate([string]$date)
     
     $result
 }
+
+function getDir{
+    param (
+    [string]$text,
+    [switch]$newFolderBtn
+    )
+    Add-Type -AssemblyName System.Windows.Forms
+    $browser = New-Object System.Windows.Forms.FolderBrowserDialog
+    $browser.Description = $text
+    $browser.UseDescriptionForTitle = $true
+    $browser.ShowNewFolderButton = $newFolderBtn
+    $null = $browser.ShowDialog()
+    return $browser.SelectedPath
+}
 function update-mvvdb{
     param(
     [string[]]$MVVDBNumbers,
@@ -32,10 +46,27 @@ function update-mvvdb{
     ".vob", ".wav", ".webm", ".wma", ".wmv", ".xls", ".xlsx", ".zip"),
     [switch]$DontWaitForResponse,
     [switch]$ReviewEachQuery,
-    [string]$mvvdbPath = "D:\ProdStore\VideoDB"
+    [string]$mvvdbPath 
     )
     import-module get-sequentialAwareFileList
     import-module MySQL
+    
+    $prefs = @{}
+    if (! (Test-Path  $mvvdbPath)){
+        $prefs =  Import-Clixml (Join-Path $env:APPDATA "update-mvvdb.xml") -ErrorAction SilentlyContinue
+        if (Test-Path $prefs.mvvdbPath -ErrorAction SilentlyContinue){
+            $mvvdbPath = $prefs.mvvdbPath
+        } else {
+            $mvvdbPath = getDir "Select the MVVDB media folder"
+        }
+        if (Test-Path  $mvvdbPath){
+            $prefs.mvvdbPath = $mvvdbPath
+            Export-Clixml -path (Join-Path $env:APPDATA "update-mvvdb.xml") -InputObject $prefs
+        } else {
+            throw "MVVDB path not found"
+        }
+    }
+    
     
     $folders = @()
     $result =$false

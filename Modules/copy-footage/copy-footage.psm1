@@ -191,7 +191,7 @@
         }
       }
       if (-not $dontUpdateFolderList){
-        update-mvvdb -MVVDBNumber $MVNumber -dontWaitForResponse
+        update-mvvdb -MVVDBNumbers $MVNumber -dontWaitForResponse
       }
     }
   }
