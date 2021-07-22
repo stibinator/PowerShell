@@ -1,27 +1,27 @@
 //@target aftereffects
 (function (thisObj) {
 
-    var scriptName = "test";
+    var scriptName = "#scriptname#";
     var versionNum = 0.1;
 
     function buildGUI(thisObj) {
         // thisObj.theCopiedKeys = thisObj.prefs.readFromPrefs();
-        thisObj.pal = (thisObj instanceof Panel)?
+        var pal = (thisObj instanceof Panel)?
         thisObj: 
         new Window("palette", thisObj.scriptTitle, undefined, {resizeable: true});
         // ----------------------- UI Elements here ---------------------
-        var yesChkBx = thisObj.pal.add("checkbox", undefined, "yes");
-        var doTheThingsBtn = thisObj.pal.add("button", undefined, "Do the things");
+        var yesChkBx = pal.add("checkbox", [undefined, undefined, 180, 22], "yes");
+        var doTheThingsBtn = pal.add("button", [undefined, undefined, 180, 22], "Do the things");
         doTheThingsBtn.onClick = function () {
             doTheThings(yesChkBx.value)
         };
 
         //------------------------ build the GUI ------------------------
-        if (thisObj.pal instanceof Window) {
-            thisObj.pal.center();
-            thisObj.pal.show();
+        if (pal instanceof Window) {
+            pal.center();
+            pal.show();
         } else{
-            thisObj.pal.layout.layout(true);
+            pal.layout.layout(true);
         }
     }
 
@@ -62,7 +62,7 @@
         
         this.setPref = function(anObject) {
             var currentVal;
-            if (anObject.var scriptName){
+            if (anObject.name){
                 if(anObject.hasOwnProperty('value')){
                     currentVal = anObject.value;
                 } else if (anObject instanceof EditText){
@@ -106,4 +106,4 @@
 
     //--------------------- go ahead and run ----------------------
     buildGUI(thisObj);
-}
+})(this)
