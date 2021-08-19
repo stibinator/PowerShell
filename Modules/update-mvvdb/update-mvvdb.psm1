@@ -74,7 +74,7 @@ function update-mvvdb{
         for ($i =0; $i -lt $MVVDBNumbers.length; $i++){
             if (test-path $MVVDBNumbers[$i]){
                 $folders += get-item $MVVDBNumbers[$i]
-            } else {update-mvvdb
+            } else {
                 $folders  += get-item (join-path $mvvdbPath ("MV{0:d5}*" -f $MVVDBNumbers[$i]));
             }
         }
