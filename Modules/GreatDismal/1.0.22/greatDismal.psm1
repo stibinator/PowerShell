@@ -19,7 +19,7 @@ function Get-Despair{
     [switch]$setTerms,
     [switch]$help
     )
-    $v = "1.0.21"
+    $v = "1.0.22"
     write-host "Great Dismal version $v logfile at $logfile"
     $lastUpdate = $false;
     $shouldUpdate = $false;
@@ -77,13 +77,13 @@ function Get-Despair{
     
     if ($help){
         write-host "Great Dismal gets pictures of despair and gloom for your lock screen.`nInstall using " -ForegroundColor "yellow" -NoNewline
-        write-host "Get-Despair -install" -ForegroundColor "white" -NoNewline
+        write-host "Get-Despair -install" -ForegroundColor "white"
         write-host "Note that you must be an admin user to install it. Soz." -ForegroundColor "yellow"
-        write-host "You can edit the" -ForegroundColor "yellow" -NoNewline
-        write-host "nouns.dat" -ForegroundColor "white" -NoNewline
-        write-host "and" -ForegroundColor "yellow" -NoNewline
-        write-host "adjectives.dat" -ForegroundColor "white" -NoNewline
-        write-host "files to use whatever search terms you like, but why bother?" -ForegroundColor "yellow" -NoNewline
+        write-host "You can edit the " -ForegroundColor "yellow" -NoNewline
+        write-host "nouns.dat " -ForegroundColor "white" -NoNewline
+        write-host "and " -ForegroundColor "yellow" -NoNewline
+        write-host "adjectives.dat " -ForegroundColor "white" -NoNewline
+        write-host "files to use whatever search terms you like, you weirdo" -ForegroundColor "yellow" -NoNewline
     }
     # only do the things if the user hasn't specified anything else
     if (!($install -or $lastPic -or $showLog -or $uninstall -or $listAdjectives -or $listNouns -or $listTerms -or $newAdjectives.length -or $newNouns.length -or $setTerms -or $help)){

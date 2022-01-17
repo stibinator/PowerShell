@@ -12,7 +12,7 @@
 RootModule = 'greatDismal.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.10'
+ModuleVersion = '1.0.22'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,7 +24,7 @@ GUID = '19570546-516d-4854-a85d-289f07984f72'
 Author = 'sdixon'
 
 # Company or vendor of this module
-CompanyName = 'Unknown'
+CompanyName = 'Pure and Applied'
 
 # Copyright statement for this module
 Copyright = 'CopyLeft sdixon. No rights reserved. DWTFYL licences—Do What The Fuck You Like with it.'

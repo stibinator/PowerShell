@@ -20,7 +20,8 @@ if ($host.Name -eq 'ConsoleHost')
   # ----------------------------------Modules and Aliases--------------------------------- 
   Import-Module "copy-text"; #enables piping to the clipboard
   Import-Module "moveCursor"
-  
+  Import-Module "chocolist"
+
   set-alias grep select-string
   set-alias which Get-Command
   set-alias cx copy-text

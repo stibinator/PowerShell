@@ -1,6 +1,6 @@
 //@target aftereffects
 (function (thisObj) {
-    var scriptName = "ticks-n-tocks";
+    var scriptName = "#scriptname#";
     var versionNum = 0.1;
     var methods = ["apples", "oranges", "pears", "the void"];
     var prefs = Preferences(scriptName);
