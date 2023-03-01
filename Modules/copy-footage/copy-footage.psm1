@@ -89,7 +89,7 @@ function Copy-Footage {
   if ($folderName -ne "") { $makeDestDir = $true }
 
   if ($MVNumber -match "MV([0-9]+)") { $MVNumber = $Matches[1] }
-  
+
   $outerFolder = Get-ChildItem ("$footageDrive\MV{0:d5}*" -f $MVNumber)
   if ((! ($outerFolder.Exists)) -or $null -eq $outerFolder) {
     if ($makeDestDir) {
@@ -169,10 +169,8 @@ function Copy-Footage {
     }
     $SerialNum++
     Write-Host $_.Name -NoNewline
-    if (
-      ($UseFullTimeStamp -and (Test-Path $destName)) -or 
-      (CF_dupeExists $destFolder  $_)
-    ) {
+    $dupeExists = CF_dupeExists $destFolder  $_
+    if (      ($UseFullTimeStamp -and (Test-Path $destName)) -or $dupeExists ) {
       if ($overwriteDupes) {
         Write-Host (" -->`nreplacing ") -NoNewline -ForegroundColor DarkRed -BackgroundColor Yellow
         Write-Host ($destName) -ForegroundColor Yellow
