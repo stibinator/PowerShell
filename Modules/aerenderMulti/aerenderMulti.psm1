@@ -128,7 +128,7 @@ function Invoke-AerenderMulti
 	[switch]$noConfirm,
 	[switch]$waitForPreviousRender,
 	[switch]$addToQueue,
-	[string]$shutDownAfterwards="",
+	[ValidateSet('sleep','shutdown')][string]$shutDownAfterwards="",
 	[switch]$noNewWindow,
 	[switch]$waitUntilAllRendersAreDoneBeforeQuitting,
 	[switch]$runAERenderAtNormalPriority,
@@ -259,12 +259,12 @@ function Invoke-AerenderMulti
 							Start-Sleep 60
 						}
 					}
-					if ($shutDownAfterwards -match "sl"){
+					if ($shutDownAfterwards -match "sleep"){
 						("finished rendering {0} at {1}" -F $projFile.name, (get-date));
 						if ($StatusFile){add-content $statusfile  ("finished rendering {0} at {1}" -F $projFile.name, (get-date)) }
 						& psshutdown.exe -d -t 30
 					}
-					elseif ($shutDownAfterwards -match "sh"){
+					elseif ($shutDownAfterwards -match "shutdown"){
 						("finished rendering {0} at {1}" -F $projFile.name, (get-date));
 						if ($StatusFile){add-content $statusfile  ("finished rendering {0} at {1}" -F $projFile.name, (get-date)) }
 						& psshutdown.exe -k -t 30

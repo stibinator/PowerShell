@@ -7,15 +7,15 @@
     </TN>
     <MS>
       <S N="Name">GreatDismal</S>
-      <Version N="Version">1.0.21</Version>
+      <Version N="Version">1.1.0</Version>
       <S N="Type">Module</S>
       <S N="Description">Downloads dreary images from Flickr to use as lockscreen pictures. Why put up with being shown fantastic places you would rather be every time you start your computer, when you could see images of gloom and despair instead.</S>
       <S N="Author">sdixon</S>
       <S N="CompanyName">stib</S>
       <S N="Copyright">CopyLeft sdixon. No rights reserved. DWTFYL licences—Do What The Fuck You Like with it.</S>
-      <DT N="PublishedDate">2022-01-17T04:27:13+11:00</DT>
+      <DT N="PublishedDate">2022-01-30T02:56:44+11:00</DT>
       <Obj N="InstalledDate" RefId="1">
-        <DT>2022-01-17T15:27:53.0020121+11:00</DT>
+        <DT>2022-01-30T13:56:53.2626722+11:00</DT>
         <MS>
           <Obj N="DisplayHint" RefId="2">
             <TN RefId="1">
@@ -57,8 +57,19 @@
         </TN>
         <DCT>
           <En>
-            <S N="Key">Command</S>
+            <S N="Key">RoleCapability</S>
             <Obj N="Value" RefId="5">
+              <TNRef RefId="2" />
+              <LST />
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">Workflow</S>
+            <Ref N="Value" RefId="5" />
+          </En>
+          <En>
+            <S N="Key">Function</S>
+            <Obj N="Value" RefId="6">
               <TNRef RefId="2" />
               <LST>
                 <S>Get-Despair</S>
@@ -67,25 +78,14 @@
           </En>
           <En>
             <S N="Key">Cmdlet</S>
-            <Obj N="Value" RefId="6">
-              <TNRef RefId="2" />
-              <LST />
-            </Obj>
+            <Ref N="Value" RefId="5" />
           </En>
           <En>
             <S N="Key">DscResource</S>
-            <Ref N="Value" RefId="6" />
+            <Ref N="Value" RefId="5" />
           </En>
           <En>
-            <S N="Key">Workflow</S>
-            <Ref N="Value" RefId="6" />
-          </En>
-          <En>
-            <S N="Key">RoleCapability</S>
-            <Ref N="Value" RefId="6" />
-          </En>
-          <En>
-            <S N="Key">Function</S>
+            <S N="Key">Command</S>
             <Obj N="Value" RefId="7">
               <TNRef RefId="2" />
               <LST>
@@ -96,7 +96,7 @@
         </DCT>
       </Obj>
       <Nil N="PowerShellGetFormatVersion" />
-      <S N="ReleaseNotes">added functions to list and modify search terms</S>
+      <S N="ReleaseNotes">skipped the registry step for get-despair, it's only needed on install</S>
       <Obj N="Dependencies" RefId="8">
         <TNRef RefId="2" />
         <LST />
@@ -113,19 +113,19 @@
           <S N="copyright">CopyLeft sdixon. No rights reserved. DWTFYL licences—Do What The Fuck You Like with it.</S>
           <S N="description">Downloads dreary images from Flickr to use as lockscreen pictures. Why put up with being shown fantastic places you would rather be every time you start your computer, when you could see images of gloom and despair instead.</S>
           <S N="requireLicenseAcceptance">False</S>
-          <S N="releaseNotes">added functions to list and modify search terms</S>
+          <S N="releaseNotes">skipped the registry step for get-despair, it's only needed on install</S>
           <S N="isLatestVersion">True</S>
           <S N="isAbsoluteLatestVersion">True</S>
           <S N="versionDownloadCount">0</S>
-          <S N="downloadCount">565</S>
-          <S N="packageSize">10371</S>
-          <S N="published">17/01/2022 4:27:13 AM +11:00</S>
-          <S N="created">17/01/2022 4:27:13 AM +11:00</S>
-          <S N="lastUpdated">17/01/2022 4:27:13 AM +11:00</S>
+          <S N="downloadCount">585</S>
+          <S N="packageSize">10447</S>
+          <S N="published">30/01/2022 2:56:44 AM +11:00</S>
+          <S N="created">30/01/2022 2:56:44 AM +11:00</S>
+          <S N="lastUpdated">30/01/2022 2:56:44 AM +11:00</S>
           <S N="tags">personalisation appearance theme lockscreen dismal dreary theCrushingEmptinessOfQuotidianExistence PSModule PSFunction_Get-Despair PSCommand_Get-Despair PSIncludes_Function</S>
           <S N="developmentDependency">False</S>
-          <S N="updated">2022-01-17T04:27:13Z</S>
-          <S N="NormalizedVersion">1.0.21</S>
+          <S N="updated">2022-01-30T02:56:44Z</S>
+          <S N="NormalizedVersion">1.1.0</S>
           <S N="Authors">sdixon</S>
           <S N="IsPrerelease">false</S>
           <S N="ItemType">Module</S>
@@ -134,7 +134,7 @@
           <S N="CompanyName">Pure and Applied</S>
         </MS>
       </Obj>
-      <S N="InstalledLocation">C:\Users\sdixon\OneDrive - Museums Victoria\Documents\PowerShell\Modules\GreatDismal\1.0.21</S>
+      <S N="InstalledLocation">C:\Users\sdixon\OneDrive - Museums Victoria\Documents\PowerShell\Modules\GreatDismal\1.1.0</S>
     </MS>
   </Obj>
 </Objs>

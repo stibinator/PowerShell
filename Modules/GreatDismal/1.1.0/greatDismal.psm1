@@ -19,7 +19,7 @@ function Get-Despair{
     [switch]$setTerms,
     [switch]$help
     )
-    $v = "1.0.22"
+    $v = "1.1.0"
     write-host "Great Dismal version $v logfile at $logfile"
     $lastUpdate = $false;
     $shouldUpdate = $false;
@@ -43,7 +43,7 @@ function Get-Despair{
     $dismalPic = Join-Path $dismalFolder "greatDismal.jpg"
     
     if ($install){ 
-        install-GreatDismal -adjectives $adjectives -nouns $nouns -dismalFolder $dismalFolder -scriptPath $scriptPath -logfile $logfile -nolog $nolog -safeSearch $safeSearch -version $v
+        install-GreatDismal -adjectives $adjectives -nouns $nouns -dismalFolder $dismalFolder -dismalPic $dismalPic -scriptPath $scriptPath -logfile $logfile -nolog $nolog -safeSearch $safeSearch -version $v
     } 
     if ($lastPic) {
         #user wants to see the current pic
@@ -143,8 +143,8 @@ function get-dismalpicFortheDay {
     }
     (New-Object Net.webclient).DownloadFile($photogURL, $dismalPic)
     write-GDLog ("downloaded `"{0}`"" -f $photoTitle) -logFile $logfile -nolog $nolog
-    
-    Set-LockscreenWallpaper -LockScreenImageValue $dismalPic -logfile $logfile;
+    # This doesn't have to happen each time it seems    
+    # Set-LockscreenWallpaper -LockScreenImageValue $dismalPic -logfile $logfile;
 }
 
 function Set-LockscreenWallpaper {
@@ -195,6 +195,7 @@ function install-GreatDismal {
     param(
     [String]$logfile = (join-path $env:APPDATA "\great dismal\log.txt"),
     [string]$dismalFolder = (join-path $env:APPDATA "\great dismal\"),
+    [string]$dismalPic,
     [int]$safeSearch = 0,
     [string[]]$adjectives = @(),
     [string[]]$nouns = @(),
@@ -254,6 +255,7 @@ function install-GreatDismal {
             -Password $Credential.GetNetworkCredential().Password `
             -taskPath "\pureandapplied\"
         }
+        Set-LockscreenWallpaper -LockScreenImageValue $dismalPic -logfile $logfile;
         if ($? -and (Get-ScheduledTask -TaskName "GreatDismal" -ErrorAction SilentlyContinue)){
             write-GDLog "GreatDismal version $version is installed" -colour "Green" -logFile $logfile -nolog $nolog
         } else {

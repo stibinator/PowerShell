@@ -37,7 +37,7 @@ if ($host.Name -eq 'ConsoleHost')
     $pathBG = "DarkCyan"
     $promptFG = "White"
     $timeBG = "DarkCyan"
-    $bgc = "Blue"
+    $bgc = "DarkBlue"
     $timeFG = "Cyan"
     $curs = ">"
     if ($isElevated){
