@@ -14,3 +14,4 @@ Modules/GuiCompletion
 Modules/ShowUI
 Modules/csv2xls
 Modules/Get-FileMetaDataReturnObject
+Modules/copy-footage/dbpw.bat
