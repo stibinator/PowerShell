@@ -4,12 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "PowerShell: Launch Current File",
             "type": "PowerShell",
             "request": "launch",
             "script": "pwsh '${file}'",
             "cwd": "${file}"
+        },
+        {
+            "name": "PowerShell: Interactive Sessi0n",
+            "type": "PowerShell",
+            "request": "launch",
+            "cwd": "${wokspaceRoot}"
         }
     ]
 }

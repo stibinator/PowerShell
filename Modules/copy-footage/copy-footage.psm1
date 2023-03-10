@@ -321,7 +321,7 @@
       $FileList += @{FName = $_.FullName; DestFol = $destFolder; Dest = $destName }
     }
   } 
-  if ($FileList.length > 0) {
+  if ($FileList.length -gt 0) {
     Write-Host("Proceed?`ny/N ") -NoNewline
     $y = read-host
     if ($y -match "y.*") {
